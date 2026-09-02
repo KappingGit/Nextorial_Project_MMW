@@ -11,7 +11,7 @@ public class MiniGameFlowManager : MonoBehaviour
 
     private void Start()
     {
-        
+        LoadRandomMiniGame();
     }
 
     private void LoadRandomMiniGame()
