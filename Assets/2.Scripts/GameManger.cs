@@ -58,15 +58,20 @@ public class GameManager : MonoBehaviour
         CurrentState = GameState.Clear;
         Debug.Log("게임 클리어! 생존 성공");
         OnGameClear?.Invoke();
+
+        OverallGameManager.Instance.OnMiniGameClear(); // 게임 클리어를 OverallGameManager의 스크립트에서 호출
     }
 
     public void GameOver()
     {
-        if (CurrentState != GameState.Playing) return; // 중복 호출 방지
+        if (CurrentState != GameState.Playing) return; // 중복 호출 방지(현재상태CurrentState가 플레이 중이라면 여기 조건문을 통과한다고 읽는게 좋다)
+        // 즉, 플레이 중이 아니라면 이 함수는 리턴을 받고 나가진다(아래 코드는 실행이 안된다.)
 
-        CurrentState = GameState.GameOver;
+        CurrentState = GameState.GameOver; // 현재 상태를 게임 오버로 처리
         Debug.Log("게임 오버! 물줄기에 맞음");
         OnGameOver?.Invoke();
+
+        OverallGameManager.Instance.OnMiniGameFail();  // 게임 클리어를 OverallGameManager의 스크립트에서 호출
     }
 
     public float GetRemainingTime()
