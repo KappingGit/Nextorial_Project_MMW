@@ -1029,6 +1029,7 @@ MonoBehaviour:
   miniGameScenes:
   - MiniGame_CA
   - MiniGame_MageHit
+  - MiniGame_Maple_Starforce
   preparePanel: {fileID: 33627672}
   prepareDuration: 2
 --- !u!1 &1999644791

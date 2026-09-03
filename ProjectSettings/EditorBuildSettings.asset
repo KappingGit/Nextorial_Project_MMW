@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/1.Scenes/MiniGame_MageHit.unity
     guid: 851fce3d2693fb94c9c06c6e7a753b4e
+  - enabled: 1
+    path: Assets/1.Scenes/MiniGame_Maple_Starforce.unity
+    guid: 464d47a485f89bb4e829e22030f4a360
   m_configObjects: {}

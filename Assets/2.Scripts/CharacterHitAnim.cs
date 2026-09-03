@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//던파 캐릭터 
 public class CharacterHitAnim : MonoBehaviour
 {
     [SerializeField] private GameObject idleImage; // 평상시 이미지
