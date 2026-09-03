@@ -1311,7 +1311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 553d08888eeb24f498d3bdc3c2152b9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeLimit: 10
+  timeLimit: 5
   timeUpBehavior: 1
 --- !u!1 &2038690931
 GameObject:
