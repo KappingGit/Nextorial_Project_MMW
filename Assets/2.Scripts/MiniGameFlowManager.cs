@@ -12,6 +12,11 @@ public class MiniGameFlowManager : MonoBehaviour
     private string currentSceneName;
     private bool isMiniGameEnded;
 
+    [Header("게임 오버 연출")]
+    [SerializeField] private GameOverUI gameOverUI;
+    [SerializeField][Tooltip("게임오버 문구 나오기 전 여유 시간")] private float delayBeforeGameOverText = 1f; // 게임오버 문구 나오기 전 여유
+    [SerializeField][Tooltip("문구 다 내려온 후, 종료까지 여유 시간")] private float delayAfterGameOverText = 2f;  // 문구 다 내려온 후, 종료까지 여유
+
     private void Start()
     {
         //LoadRandomMiniGame(); // 지금은 사용 안함
@@ -23,17 +28,30 @@ public class MiniGameFlowManager : MonoBehaviour
     {
         while (true)
         {
-            yield return StartCoroutine(ShowPrepareScreen()); // 게임 준비단계 코루틴
+            bool isGameOver = OverallGameManager.Instance.CurrentOverallState == OverallState.GameOver;
+
+            yield return StartCoroutine(ShowPrepareScreen(keepActiveAfter: isGameOver)); // 게임 준비단계 코루틴
+
+            // 준비 화면을 보여준 직후, 전체 게임 상태를 확인
+            if (OverallGameManager.Instance.CurrentOverallState == OverallState.GameOver)
+            {
+                yield return StartCoroutine(GameOverSequence());
+                yield break; // 반복문(코루틴) 완전히 종료 -> 더 이상 미니게임 로드 안 함
+            }
+
             yield return StartCoroutine(PlayMiniGame()); // 미니 게임 단계 코루틴
         }
     }
 
     // 1단계 : 준비 화면(목숨 값이 보인다, 잠깐의 텀이 존재)
-    private IEnumerator ShowPrepareScreen()
+    private IEnumerator ShowPrepareScreen(bool keepActiveAfter = false)
     {
         preparePanel.SetActive(true);
         yield return new WaitForSeconds(prepareDuration);
-        preparePanel.SetActive(false);
+        if (!keepActiveAfter) // false일 때만 끔 (기본값)
+        {
+            preparePanel.SetActive(false);
+        }
     }
 
     private IEnumerator PlayMiniGame()
@@ -69,6 +87,26 @@ public class MiniGameFlowManager : MonoBehaviour
     private void HandleMiniGameEnd()
     {
         isMiniGameEnded = true;
+    }
+
+    private IEnumerator GameOverSequence() // 게임 오버 시퀀스
+    {
+        yield return new WaitForSeconds(delayBeforeGameOverText); // 짧은 여유
+
+        yield return StartCoroutine(gameOverUI.SlideDown()); // 문구가 다 내려올 때까지 대기
+
+        yield return new WaitForSeconds(delayAfterGameOverText); // 문구 보여준 채로 잠깐 대기
+
+        QuitGame();
+    }
+
+    private void QuitGame() // 게임이 나가지게 만듦
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false; // 에디터에서는 Play 모드만 종료
+#else
+    Application.Quit(); // 실제 빌드에서는 앱 종료
+#endif
     }
 
     #region 초기 코드: 바로 게임이 시작되는 코드 (준비단계 X), 만든 코드가 아까워서 일단 주석처리, 나중에 공부해두기
